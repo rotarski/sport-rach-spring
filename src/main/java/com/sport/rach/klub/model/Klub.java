@@ -2,13 +2,24 @@ package com.sport.rach.klub.model;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.Version;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 
@@ -19,33 +30,36 @@ public class Klub implements Serializable{
 
 	@Id()
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+	private Long id;
 	
-	@Size(min = 3)
-	String nazwa;
-	
-	@NotNull
-	@OneToOne
-	KlubAdres adres;
-	@NotNull
-	Integer nip;
-	@NotNull
-	Integer regon;
+	@Size(min = 3, message = "Podah nazwę klubu min 3 znaki")
+	private String nazwa;
+	@Valid
+	@NotNull(message = "Podaj adres")
+	@Embedded
+	private Adres adres;
+	@NotNull(message = "Podaj nip")
+	private Integer nip;
+	@NotNull(message = "Podaj regon")
+	private Integer regon;
 
-	@OneToOne
-	Rejestracja rejestracja;
-	
-	@OneToOne
-	Organ zarzad;
-	@OneToOne
-	Organ nadzor;
+	@OneToOne(cascade = {CascadeType.ALL})
+	private Rejestracja rejestracja;
+
+	@OneToOne(cascade = {CascadeType.ALL})
+	private Organ zarzad;
+
+	@OneToOne(cascade = {CascadeType.ALL})
+	private Organ nadzor;
+	@Version
+	private long version;
 	
 	public Klub() {
 	}
 
 	public Klub(
 			@Size(min = 3) String nazwa, 
-			@NotNull KlubAdres adres, 
+			@NotNull Adres adres, 
 			@NotNull Integer nip, 
 			@NotNull Integer regon) {
 		super();
@@ -71,11 +85,11 @@ public class Klub implements Serializable{
 		this.nazwa = nazwa;
 	}
 
-	public KlubAdres getAdres() {
+	public Adres getAdres() {
 		return adres;
 	}
 
-	public void setAdres(KlubAdres adres) {
+	public void setAdres(Adres adres) {
 		this.adres = adres;
 	}
 
@@ -117,6 +131,14 @@ public class Klub implements Serializable{
 
 	public void setNadzor(Organ nadzor) {
 		this.nadzor = nadzor;
+	}
+
+	public long getVersion() {
+		return version;
+	}
+
+	public void setVersion(long version) {
+		this.version = version;
 	}
 
 

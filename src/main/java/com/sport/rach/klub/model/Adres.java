@@ -1,29 +1,27 @@
-package com.sport.rach.wspolne;
+package com.sport.rach.klub.model;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
+
+import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 
-@MappedSuperclass
-public class Adres {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
-	@NotNull
-	String miejscowosc;
-	String ulica;
-	String numer;
-	@Pattern(regexp = "[0-9] {5}")
-	String kod;
+@Embeddable
+public class Adres implements Serializable{
+
+	private static final long serialVersionUID = 3278518821685872673L;
+	@NotNull(message = "Podaj miejscowość")
+	private String miejscowosc;
+	private String ulica;
+	private String numer;
+	@Pattern(regexp = "([0-9]{5}$)", message = "Podaj kod xxxxx")
+	private String kod;
 	
 	public Adres() {
 	}
 
-	public Adres(@NotNull String miejscowosc, String ulica, String numer, @Pattern(regexp = "[0-9] {5}") String kod) {
+	public Adres(@NotNull String miejscowosc, String ulica, String numer, @Pattern(regexp = "([0-9]{5})") String kod) {
 		super();
 		this.miejscowosc = miejscowosc;
 		this.ulica = ulica;
@@ -31,13 +29,7 @@ public class Adres {
 		this.kod = kod;
 	}
 
-	public Long getId() {
-		return id;
-	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getMiejscowosc() {
 		return miejscowosc;

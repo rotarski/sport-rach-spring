@@ -6,36 +6,46 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
+@Table(name = "klub_organ")
 public class Organ implements Serializable{
 
 	private static final long serialVersionUID = -6987207288374920307L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
-	@NotNull
-	String nazwa;
-	@NotNull
-	OrganTyp organTyp;
+	private Long id;
+	@NotNull(message = "Podaj nazwę")
+	private String nazwa;
+	@JsonIgnore
+	@Enumerated(EnumType.STRING)
+	private OrganTyp organTyp;
+	@JsonManagedReference
+	@OneToMany(cascade = {CascadeType.ALL},orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "organ")
+	private List<Czlonek> sklad = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	List<Czlonek> sklad = new ArrayList<>();
 
 	public Organ() {
 	}
 
-	public Organ(@NotNull String nazwa, @NotNull OrganTyp organTyp, List<Czlonek> sklad) {
+	public Organ(@NotNull String nazwa, @NotNull OrganTyp organTyp) {
 		super();
 		this.nazwa = nazwa;
 		this.organTyp = organTyp;
-		this.sklad = sklad;
 	}
 
 	public Long getId() {
@@ -69,7 +79,6 @@ public class Organ implements Serializable{
 	public void setSklad(List<Czlonek> sklad) {
 		this.sklad = sklad;
 	}
-	
-	
+
 
 }

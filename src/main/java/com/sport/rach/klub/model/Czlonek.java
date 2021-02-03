@@ -6,31 +6,42 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
+@Table(name = "klub_czlonek")
 public class Czlonek implements Serializable{
 
 	private static final long serialVersionUID = -148940617286285394L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
-	@NotNull
-	String imie;
-	@NotNull
-	String nazwisko;
-	@NotNull
-	@Pattern(regexp = "[0-9] {11}")
-	String pesel;
-	@NotNull
-	String funkcjaOrganu;
+	private Long id;
+	@NotNull(message = "Podaj imię")
+	private String imie;
+	@NotNull(message = "Podaj nazwisko")
+	private String nazwisko;
+	@NotNull(message = "Podaj pesel")
+	@Pattern(regexp = "([0-9]{11}$)", message = "Podaj prawidłowy pesel")
+	private String pesel;
+	@NotNull(message = "Podaj funkcję")
+	private String funkcjaOrganu;
+	@ManyToOne
+	@JoinColumn(name="id_organ")
+	@JsonBackReference
+	private Organ organ;
 	
 	public Czlonek() {
 	}
 
 	public Czlonek(@NotNull String imie, @NotNull String nazwisko,
-			@NotNull @Pattern(regexp = "[0-9] {11}") String pesel, @NotNull String funkcjaOrganu) {
+			@NotNull @Pattern(regexp = "([0-9]{11}$)") String pesel, @NotNull String funkcjaOrganu) {
 		super();
 		this.imie = imie;
 		this.nazwisko = nazwisko;
@@ -76,6 +87,14 @@ public class Czlonek implements Serializable{
 
 	public void setFunkcjaOrganu(String funkcjaOrganu) {
 		this.funkcjaOrganu = funkcjaOrganu;
+	}
+
+	public Organ getOrgan() {
+		return organ;
+	}
+
+	public void setOrgan(Organ organ) {
+		this.organ = organ;
 	}
 	
 	
